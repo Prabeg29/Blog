@@ -28,8 +28,7 @@
     </head>
     <body>
 
-        <h1>Blog Title</h1>
-        <p>This paragraph summarises what the blog is about.</p>
+        <?php require('./template/title.php');?>
 
         <?php foreach($posts as $post): ?>
             <h2><?php echo htmlspecialchars($post['title']); ?></h2>
