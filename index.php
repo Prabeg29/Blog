@@ -36,7 +36,7 @@
             <div><?php echo date($post['created_at']); ?></div>
             <p><?php echo htmlspecialchars($post['body']);?></p>
             <p>
-                <a href="#">Read more...</a>
+                <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
             </p>
         <?php endforeach;?>
 
