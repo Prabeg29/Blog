@@ -1,26 +1,9 @@
 <?php
-    require_once('./lib/common.php');
+    require_once('./config/config.php');
+    require_once('./lib/db.php');
+    require_once('./lib/home.php');
 
-    $conn = connectToDatabase();
-
-    // Statement to get all posts
-    $sql = "SELECT id, title, body, created_at FROM post ORDER BY created_at DESC";
-
-    // Query the database and get posts
-    $result = mysqli_query($conn, $sql);
-
-    if (mysqli_num_rows($result) > 0) {
-        $posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
-    } 
-    else {
-        echo "0 results";
-    }
-
-    // free result
-    mysqli_free_result($result);
-
-    // close connection
-    mysqli_close($conn);
+    $posts = getAllPosts();
 ?>
 
 <!DOCTYPE html>
@@ -32,15 +15,18 @@
 
         <?php require('./template/title.php');?>
 
-        <?php foreach($posts as $post): ?>
-            <h2><?php echo htmlspecialchars($post['title']); ?></h2>
-            <div><?php echo date($post['created_at']); ?></div>
-            <p><?php echo htmlspecialchars($post['body']);?></p>
-            <p>
-                <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
-            </p>
-            <div><?php echo countCommentsForPost($post['id']);?> comments</div>
-        <?php endforeach;?>
+        <div>
+            <h2>Recent Articles</h2>
+            <?php foreach($posts as $post): ?>
+                <h3><?php echo htmlspecialchars($post['title']); ?></h3>
+                <div><?php echo date($post['created_at']); ?></div>
+                <p><?php echo htmlspecialchars($post['body']);?></p>
+                <p>
+                    <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
+                </p>
+                <div><?php echo commentCountForPost($post['id']);?> comments</div>
+            <?php endforeach;?>
+        </div>
 
     </body>
 </html>
