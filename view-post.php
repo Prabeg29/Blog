@@ -1,5 +1,7 @@
 <?php
-    require('./config/connect_to_db.php');
+    require('lib/common.php');
+
+    $conn = connectToDatabase();
 
     if(isset($_GET['id'])){
         $postId = mysqli_real_escape_string($conn, $_GET['id']);
@@ -41,5 +43,19 @@
         <p>
             <?php echo htmlspecialchars($post['body']); ?>
         </p>
+        <?php foreach(getCommentsForPost($postId) as $comment):?>
+            <div class="comment">
+                <div class="comment-meta">
+                    Comment from
+                    <?php echo htmlspecialchars($comment['name']); ?>
+                    on
+                    <?php echo date($comment['created_at']); ?>
+                </div>
+                <div class="comment-body">
+                    <?php echo htmlspecialchars($comment['text']); ?>
+                </div>
+                <br>
+            </div>
+        <?php endforeach;?>
     </body>
 </html>
