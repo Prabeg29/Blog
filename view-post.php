@@ -1,29 +1,14 @@
 <?php
-    require('lib/common.php');
-
-    $conn = connectToDatabase();
-
+    require_once('lib/common.php');
+    require_once('lib/view-post.php');
+    
     if(isset($_GET['id'])){
+
+        $conn = connectToDatabase();
+
         $postId = mysqli_real_escape_string($conn, $_GET['id']);
 
-        // Statement to get post of particular id
-        $sql = "SELECT * FROM post WHERE id=$postId";
-
-        // Query the database to get the result
-        $result = mysqli_query($conn, $sql);
-
-        if (mysqli_num_rows($result) > 0) {
-            $post = mysqli_fetch_assoc($result);
-        } 
-        else {
-            echo "0 results";
-        }
-
-        // free $result
-        mysqli_free_result($result);
-
-        //close connection
-        mysqli_close($conn);
+        $post = getPost($conn, $postId);
     }
 ?>
 
