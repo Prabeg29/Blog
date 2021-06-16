@@ -1,5 +1,7 @@
 <?php
-    require('./config/connect_to_db.php');
+    require_once('./lib/common.php');
+
+    $conn = connectToDatabase();
 
     // Statement to get all posts
     $sql = "SELECT id, title, body, created_at FROM post ORDER BY created_at DESC";
@@ -37,6 +39,7 @@
             <p>
                 <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
             </p>
+            <div><?php echo countCommentsForPost($post['id']);?> comments</div>
         <?php endforeach;?>
 
     </body>
