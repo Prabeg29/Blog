@@ -36,6 +36,21 @@ function countCommentsForPost($postId){
     $result = mysqli_query($conn, $sql);
 
     $commentCount = mysqli_fetch_row($result);
-    
+
     return (int) $commentCount[0];
+}
+
+/**
+ * Returns all the comments for the specified post
+ *
+ * @param integer $postId
+ */
+function getCommentsForPost($postId)
+{
+    $conn = connectToDatabase();
+    $sql = "SELECT name, text, created_at, website FROM comments WHERE post_id = $postId";
+    $result = mysqli_query($conn, $sql);
+    $comments = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    return $comments;
 }
