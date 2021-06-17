@@ -40,6 +40,8 @@
                     <br>
                 </div>
             <?php endforeach;?>
+
+            <?php include('./template/comment-form.php');?>
         <?php else:?>
             <h5>No Such Blog Exists!</h5>
         <?php endif;?>
