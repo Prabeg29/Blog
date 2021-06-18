@@ -2,7 +2,7 @@
 
 <form action="view-post.php" method="POST">
     <p>
-        <input type="hidden" name="commentOnPostId" value="<?php echo $post['id']?>">
+        <input type="hidden" name="commentOnPostId" value="<?php echo $_SESSION['post']['id']?>">
     </p>
     <p>
         <label for="name">Name*: </label>
