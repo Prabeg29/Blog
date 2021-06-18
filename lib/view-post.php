@@ -34,8 +34,7 @@ function getPost($postId){
  *
  * @param integer $postId
  */
-function getCommentsForPost($postId)
-{
+function getCommentsForPost($postId){
     $conn = connectToDatabase();
 
     $postId = mysqli_real_escape_string($conn, $postId);
@@ -49,4 +48,65 @@ function getCommentsForPost($postId)
     $comments = mysqli_fetch_all($result, MYSQLI_ASSOC);
     
     return $comments;
+}
+
+/**
+ * Write comment to a particular post
+ *
+ * @param integer $postId
+ * @param array $commentData
+ * 
+ * @return array $errors
+ */
+function addCommentToPost($postId, $commentData){
+    $errorMessage = ['name'=>'', 'email'=>'', 'comment'=>''];
+
+    // name validation
+    if(empty($commentData['name'])){
+        $errorMessage['name'] = "Name is required"."</br>";
+    }
+    else{
+        if(strlen($commentData['name']) > 255){
+            $errorMessage['name'] = "Please do not enter more than 255 characters"."</br>";
+        }
+        if(!preg_match('/^[a-zA-Z\s]+$/', $commentData['name'])){
+            $errorMessage['name'] =  "Name must consist of letters and spaces only"."<br>";
+        }
+    }
+
+    // email validation
+    if(empty($commentData['email'])){
+        $errorMessage['email'] = "Email is required"."</br>";
+    }
+    else{
+        if(!filter_var($commentData['email'], FILTER_VALIDATE_EMAIL)){
+            $errorMessage['email'] =  "Please enter a valid email address"."<br>";
+        }
+    }
+
+    // comment validation
+    if(empty($commentData['comment'])){
+        $errorMessage['comment'] = "Comment is required"."</br>";
+    }
+
+    if(!array_filter($errorMessage)){
+        $conn = connectToDatabase();
+
+        $postId = trim(mysqli_real_escape_string($conn, $postId));
+        $name = trim(mysqli_real_escape_string($conn, $commentData['name']));
+        $email = trim(mysqli_real_escape_string($conn, $commentData['email']));
+        $comment = trim(mysqli_real_escape_string($conn, $commentData['comment']));
+
+        // Insert SQL query
+        $sql = "INSERT INTO comments(post_id, name, website, text) VALUES('$postId', '$name', '$email', '$comment')";
+
+        if(mysqli_query($conn, $sql)){
+            // success
+            header("Location: ../view-post.php?postId=$postId");
+        }
+        else{
+            echo 'query error: ' . mysqli_error($conn);
+        }
+    }
+    return $errorMessage;
 }
