@@ -66,7 +66,7 @@ function addCommentToPost($commentData, $errorMessage){
         if(strlen($commentData['name']) > 255){
             $errorMessage['name'] = "Please do not enter more than 255 characters"."</br>";
         }
-        if(!preg_match('/^[a-zA-Z\s]+$/', $commentData['name'])){
+        else if(!preg_match('/^[a-zA-Z\s]+$/', $commentData['name'])){
             $errorMessage['name'] =  "Name must consist of letters and spaces only"."<br>";
         }
     }
@@ -76,7 +76,10 @@ function addCommentToPost($commentData, $errorMessage){
         $errorMessage['email'] = "Email is required!"."</br>";
     }
     else{
-        if(!filter_var($commentData['email'], FILTER_VALIDATE_EMAIL)){
+        if(strlen($commentData['email']) > 255){
+            $errorMessage['name'] = "Please do not enter more than 255 characters"."</br>";
+        }
+        else if(!filter_var($commentData['email'], FILTER_VALIDATE_EMAIL)){
             $errorMessage['email'] =  "Please enter a valid email address"."<br>";
         }
     }
@@ -98,7 +101,7 @@ function addCommentToPost($commentData, $errorMessage){
 
         if(mysqli_query($conn, $sql)){
             // success
-            header("Location: ../.php");
+            header("Location: view-post.php?id={$commentData['postId']}");
         }
         else{
             echo 'query error: ' . mysqli_error($conn);
