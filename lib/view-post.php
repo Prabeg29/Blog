@@ -53,17 +53,14 @@ function getCommentsForPost($postId){
 /**
  * Write comment to a particular post
  *
- * @param integer $postId
  * @param array $commentData
  * 
- * @return array $errors
+ * @return array $errorMessage
  */
-function addCommentToPost($postId, $commentData){
-    $errorMessage = ['name'=>'', 'email'=>'', 'comment'=>''];
-
+function addCommentToPost($commentData, $errorMessage){
     // name validation
     if(empty($commentData['name'])){
-        $errorMessage['name'] = "Name is required"."</br>";
+        $errorMessage['name'] = "Name is required!"."</br>";
     }
     else{
         if(strlen($commentData['name']) > 255){
@@ -76,7 +73,7 @@ function addCommentToPost($postId, $commentData){
 
     // email validation
     if(empty($commentData['email'])){
-        $errorMessage['email'] = "Email is required"."</br>";
+        $errorMessage['email'] = "Email is required!"."</br>";
     }
     else{
         if(!filter_var($commentData['email'], FILTER_VALIDATE_EMAIL)){
@@ -86,23 +83,22 @@ function addCommentToPost($postId, $commentData){
 
     // comment validation
     if(empty($commentData['comment'])){
-        $errorMessage['comment'] = "Comment is required"."</br>";
+        $errorMessage['comment'] = "Comment is required!"."</br>";
     }
 
     if(!array_filter($errorMessage)){
         $conn = connectToDatabase();
 
-        $postId = trim(mysqli_real_escape_string($conn, $postId));
-        $name = trim(mysqli_real_escape_string($conn, $commentData['name']));
-        $email = trim(mysqli_real_escape_string($conn, $commentData['email']));
-        $comment = trim(mysqli_real_escape_string($conn, $commentData['comment']));
+        foreach($commentData as &$cd){
+            $cd = trim(mysqli_real_escape_string($conn, $cd));
+        }
 
         // Insert SQL query
-        $sql = "INSERT INTO comments(post_id, name, website, text) VALUES('$postId', '$name', '$email', '$comment')";
+        $sql = "INSERT INTO comments(post_id, name, website, text) VALUES('{$commentData['postId']}', '{$commentData['name']}', '{$commentData['email']}', '{$commentData['comment']}')";
 
         if(mysqli_query($conn, $sql)){
             // success
-            header("Location: ../view-post.php?postId=$postId");
+            header("Location: ../.php");
         }
         else{
             echo 'query error: ' . mysqli_error($conn);

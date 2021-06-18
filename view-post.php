@@ -1,11 +1,32 @@
 <?php
+
+    session_start();
+
     require_once('./config/config.php');
     require_once('./lib/db.php');
     require_once('./lib/view-post.php');
     
     if(isset($_GET['id'])){
-        $post = getPost($_GET['id']);
-        $comments = getCommentsForPost($_GET['id']);
+        $_SESSION['post'] = getPost($_GET['id']);
+        $_SESSION['comments'] = getCommentsForPost($_GET['id']);
+    }
+
+    $errorMessage = ['name'=>'', 'email'=>'', 'comment'=>''];
+    $commentData = [
+        'postId'=>'',
+        'name'=>'',
+        'email'=>'',
+        'comment'=>''
+    ];
+    if(isset($_POST['submit'])){
+        $commentData = [
+            'postId'=>$_POST['commentOnPostId'],
+            'name'=>$_POST['name'],
+            'email'=>$_POST['email'],
+            'comment'=>$_POST['comment']
+        ];
+
+        $errorMessage = addCommentToPost($commentData, $errorMessage);
     }
 ?>
 
@@ -16,17 +37,17 @@
     <body>
         <?php require('./template/title.php');?>
 
-        <?php if($post):?>
+        <?php if($_SESSION['post']):?>
             <h2>
-                <?php echo htmlspecialchars($post['title']); ?>
+                <?php echo htmlspecialchars($_SESSION['post']['title']); ?>
             </h2>
             <div>
-                <?php echo date($post['created_at']); ?>
+                <?php echo date($_SESSION['post']['created_at']); ?>
             </div>
             <p>
-                <?php echo htmlspecialchars($post['body']); ?>
+                <?php echo htmlspecialchars($_SESSION['post']['body']); ?>
             </p>
-            <?php foreach($comments as $comment):?>
+            <?php foreach($_SESSION['comments'] as $comment):?>
                 <div class="comment">
                     <div class="comment-meta">
                         Comment from
