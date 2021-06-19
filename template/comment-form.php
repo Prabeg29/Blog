@@ -6,19 +6,19 @@
     </p>
     <p>
         <label for="name">Name*: </label>
-        <input type="text" name="name" value="<?php echo $commentData['name']; ?>">
+        <input type="text" name="name" value="<?php echo htmlspecialchars($commentData['name']); ?>">
         <div><?php echo $errorMessage['name'];?></div>
     </p>
     
     <p>
         <label for="email">Email*: </label>
-        <input type="email" name="email" value="<?php echo $commentData['email']; ?>">
+        <input type="email" name="email" value="<?php echo htmlspecialchars($commentData['email']); ?>">
         <div><?php echo $errorMessage['email'];?></div>
     </p>
 
     <p>
         <label for="comment">Comment*: </label>
-        <textarea name="comment" id="" cols="70" rows="8"></textarea>
+        <textarea name="comment" id="" cols="70" rows="8"><?php echo htmlspecialchars($commentData['comment']);?></textarea>
         <div><?php echo $errorMessage['comment'];?></div>
     </p>
     
