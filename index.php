@@ -14,7 +14,8 @@
     <body>
 
         <?php require('./template/title.php');?>
-
+        <p>This paragraph summarises what the blog is about.</p>
+        
         <div>
             <h2>Recent Articles</h2>
             <?php foreach($posts as $post): ?>
