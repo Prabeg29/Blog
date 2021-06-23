@@ -1,9 +1,11 @@
 <?php
+    session_start();
+
     require_once('./config/config.php');
     require_once('./lib/db.php');
     require_once('./lib/home.php');
 
-    $posts = getAllPosts();
+    $posts = getAllPosts($conn);
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +27,7 @@
                 <p>
                     <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
                 </p>
-                <div><?php echo commentCountForPost($post['id']);?> comments</div>
+                <div><?php echo commentCountForPost($conn, $post['id']);?> comments</div>
             <?php endforeach;?>
         </div>
 

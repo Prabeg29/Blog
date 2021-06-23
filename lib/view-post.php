@@ -5,12 +5,11 @@
  * 
  * @param $conn
  * @param integer $postId
- * @returns array $post
+ * 
+ * @return array $post
  * @throws exception
  */
-function getPost($postId){
-    $conn = connectToDatabase();
-
+function getPost($conn, $postId){
     $postId = mysqli_real_escape_string($conn, $postId);
 
     // Statement to get post of particular id
@@ -34,8 +33,7 @@ function getPost($postId){
  *
  * @param integer $postId
  */
-function getCommentsForPost($postId){
-    $conn = connectToDatabase();
+function getCommentsForPost($conn, $postId){
 
     $postId = mysqli_real_escape_string($conn, $postId);
     
@@ -57,7 +55,7 @@ function getCommentsForPost($postId){
  * 
  * @return array $errorMessage
  */
-function addCommentToPost($commentData, $errorMessage){
+function addCommentToPost($conn, $commentData, $errorMessage){
     // name validation
     if(empty($commentData['name'])){
         $errorMessage['name'] = "Name is required!"."</br>";
@@ -90,7 +88,6 @@ function addCommentToPost($commentData, $errorMessage){
     }
 
     if(!array_filter($errorMessage)){
-        $conn = connectToDatabase();
 
         foreach($commentData as &$cd){
             $cd = trim(mysqli_real_escape_string($conn, $cd));

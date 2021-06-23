@@ -7,8 +7,8 @@
     require_once('./lib/view-post.php');
     
     if(isset($_GET['id'])){
-        $_SESSION['post'] = getPost($_GET['id']);
-        $_SESSION['comments'] = getCommentsForPost($_GET['id']);
+        $_SESSION['post'] = getPost($conn, $_GET['id']);
+        $_SESSION['comments'] = getCommentsForPost($conn, $_GET['id']);
     }
 
     $errorMessage = ['name'=>'', 'email'=>'', 'comment'=>''];
@@ -26,7 +26,7 @@
             'comment'=>$_POST['comment']
         ];
 
-        $errorMessage = addCommentToPost($commentData, $errorMessage);
+        $errorMessage = addCommentToPost($conn, $commentData, $errorMessage);
     }
 ?>
 
