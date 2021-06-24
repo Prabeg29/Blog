@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+    RewriteCond %{REQUEST_URI} ^/(data|lib\|template|vendor)/
+    RewriteRule ^ - [L, R=404]
+</IfModule>
+

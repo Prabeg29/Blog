@@ -1,7 +1,7 @@
 <h3>Add Comment</h3>
 
-<form action="view-post.php" method="POST" class="comment-form">
-    
+<form action="view-post.php" method="POST" class="comment-form user-form">
+
     <div>
         <input type="hidden" name="commentOnPostId" value="<?php echo $_SESSION['post']['id']?>">
     </div>
