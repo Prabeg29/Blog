@@ -1,9 +1,9 @@
 <?php
-
-
     /* *
     * Returns all the published posts
-    * 
+    *
+    * @param $conn
+    *
     * @return array $posts 
     *  */
     function getAllPosts($conn){
@@ -26,7 +26,7 @@
     * @param integer $postId
     * @param $conn
     * 
-    * @return integer 
+    * @return integer $commentCount[0]
     *  */
     function commentCountForPost($conn, $postId){
     

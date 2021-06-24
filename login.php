@@ -31,7 +31,7 @@
         <title>
             A blog application | Login
         </title>
-        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+        <?php require 'template/head.php'?>
     </head>
     <body>
         <?php require 'template/title.php' ?>

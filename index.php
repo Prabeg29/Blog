@@ -11,7 +11,8 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>A Blog Application</title>
+        <title>Blog Application</title>
+        <?php require 'template/head.php';?>
     </head>
     <body>
 
@@ -20,15 +21,27 @@
         
         <div>
             <h2>Recent Articles</h2>
-            <?php foreach($posts as $post): ?>
-                <h3><?php echo htmlspecialchars($post['title']); ?></h3>
-                <div><?php echo date($post['created_at']); ?></div>
-                <p><?php echo htmlspecialchars($post['body']);?></p>
-                <p>
-                    <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
-                </p>
-                <div><?php echo commentCountForPost($conn, $post['id']);?> comments</div>
-            <?php endforeach;?>
+            <div class="post-list">
+                <?php foreach($posts as $post): ?>
+                    <div class="post-synopsis">
+                        <h3>
+                            <?php echo htmlspecialchars($post['title']); ?>
+                        </h3>
+                        <div class="meta">
+                            <?php echo date($post['created_at']); ?>
+                        </div>
+                        <p>
+                            <?php echo htmlspecialchars($post['body']);?>
+                        </p>
+                        <div class="read-more">
+                            <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
+                        </div>
+                        <div>
+                            <?php echo commentCountForPost($conn, $post['id']);?> comments
+                        </div>
+                    </div>
+                <?php endforeach;?>
+            </div>
         </div>
 
     </body>
