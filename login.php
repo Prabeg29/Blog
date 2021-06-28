@@ -4,23 +4,36 @@
     if(isset($_SESSION['loggedin'])){
         header('Location: index.php');
     }
+
     require_once('./config/config.php');
     require_once('./lib/db.php');
     require_once('./lib/login.php');
 
     $errorMessage = ['username'=>'', 'password'=>''];
-    $credentials = [
+
+    $credential = [
         'username'=>'',
         'password'=>''
     ];
+
     if(isset($_POST['login'])){
 
-        $credentials['username'] = $_POST['username'];
-        $credentials['password'] = $_POST['password'];
+        $credential['username'] = trim($_POST['username']);
+        $credential['password'] = trim($_POST['password']);
 
-        $errorMessage = tryLogin($conn, $credentials, $errorMessage);
-        if ($errorMessage['success']){
-            login($credentials['username']);
+        $errorMessage = fieldEmpty($credential, $errorMessage);
+
+        if(empty($errorMessage['username']) || empty($errorMessage['password'])){
+            $errorMessage = tryLogin($conn, $credential, $errorMessage);
+            if($errorMessage['username']){
+                echo $errorMessage['username'];
+            }
+            else if($errorMessage['password']){
+                echo $errorMessage['password'];
+            }
+            else{
+                login($conn, $credential['username']);
+            }
         }
     }
 ?>
@@ -39,11 +52,17 @@
         <form method="POST" action="<?php echo $_SERVER['PHP_SELF']?>">
             <p>
                 <label for="username">Username: </label> 
-                <input type="text" name="username" value="<?php echo htmlspecialchars($credentials['username']);?>" />
+                <input type="text" name="username" value="<?php echo htmlspecialchars($credential['username']);?>" />
+                <div>
+                    <?php echo $errorMessage['username']; ?>
+                </div>
             </p>
             <p>
                 <label for="password">Password: </label>
-                <input type="password" name="password" value="<?php echo htmlspecialchars($credentials['password']);?>"/>
+                <input type="password" name="password" value="<?php echo htmlspecialchars($credential['password']);?>"/>
+                <div>
+                    <?php echo $errorMessage['username']; ?>
+                </div>
             </p>
             <input type="submit" name="login" value="Login" />
         </form>

@@ -1,55 +1,73 @@
 <?php
 /*  
+ * Check if the login field(s) is empty.
  *
- * 
+ *@param arr $credential
+ *@param arr $errorMessage
+ *
+ *@return arr $errorMessage 
  */
-function tryLogin($conn, $credentials, $errorMessage){
+function fieldEmpty($credential, $errorMessage){
     // Check if username is empty
-    if(empty(trim($credentials['username']))){
+    if(empty(trim($credential['username']))){
         $errorMessage['username'] = "Please enter username"."</br>";
     }
 
     // Check if password is empty
-    if(empty(trim($credentials['password']))){
+    if(empty(trim($credential['password']))){
         $errorMessage['password'] = "Please enter password"."</br>";
     }
 
-    $username = mysqli_real_escape_string($conn, $credentials['username']);
+    return $errorMessage;
+}
 
-    $sql = "SELECT * FROM user WHERE username='$username'";
+/*  
+ *@param mysqli $conn
+ *@param arr $user_id
+ *@param arr $errorMessage
+ * 
+ */
+function tryLogin($conn, $credential, $errorMessage){
+    
+    $username = mysqli_real_escape_string($conn, trim($credential['username']));
+
+    $sql = "SELECT id, username, password FROM user WHERE username='$username'";
 
     $result = mysqli_query($conn, $sql);
 
-    if (mysqli_num_rows($result) > 0) {
-        $user = mysqli_fetch_assoc($result);
-        $hash = $user['password'];
-
-        $errorMessage['success'] = password_verify($credentials['password'], $hash);
+    if (!mysqli_num_rows($result)) {
+        $errorMessage['username'] = "No such username exists";
     }
     else{
-        echo "No such username exists";
+        $user = mysqli_fetch_assoc($result);
+        $sucess = password_verify($credential['password'], $user['password']);
+        if(!$sucess){
+            $errorMessage['password'] = "Invalid password";
+        }
     }
     
     return $errorMessage;
 }
 
 /**
- * Logs the user in
+ * Set Session Variables for logged in user
  *
- * For safety, we ask PHP to regenerate the cookie, so if a user logs onto a site that a cracker
- * has prepared for him/her (e.g. on a public computer) the cracker's copy of the cookie ID will be
- * useless.
- *
+ * @param mysqli $conn
  * @param string $username
  */
-function login($username)
+function login($conn, $username)
 {
-    session_start();
+    $username = mysqli_real_escape_string($conn, $username);
+
+    $sql = "SELECT id, username FROM user WHERE username='$username'";
+
+    $result = mysqli_query($conn, $sql);
+    $user = mysqli_fetch_assoc($result);
                             
     // Store data in session variables
     $_SESSION["loggedin"] = true;
-    //$_SESSION["id"] = $id;
-    $_SESSION["username"] = $username;                            
+    $_SESSION["user_id"] = $user['id'];
+    $_SESSION["username"] = $user['username'];                            
     
     // Redirect user to welcome page
     header("location: index.php");
