@@ -1,54 +1,73 @@
 <?php
 /* *
+ * Validate the input for Post
+ * 
+ * @param arr $postData
+ * @param arr $errorMessage 
+ * 
+ * @return bool
+ */
+function validatePost($postData, &$errorMessage){
+    
+
+    // title validation
+    if(empty($postData['title'])){
+        $errorMessage['postTitle'] = "Title is required!"."</br>";
+    }
+    else{
+        if(strlen($postData['title']) > 255){
+            $errorMessage['postTitle'] = "Please do not enter more than 255 characters"."</br>";
+        }
+    }
+    // body validation
+    if(empty($postData['body'])){
+        $errorMessage['postBody'] = "Body is required!"."</br>";
+    }
+    else{
+        if(strlen($postData['body']) > 255){
+            $errorMessage['postBody'] = "Please do not enter more than 255 characters"."</br>";
+        }
+    }
+
+    return empty($errorMessage['postTitle']) || empty($errorMessage['postBody']) ;
+}
+
+/* *
  * Insert new post 
  * 
  * @param $conn
  * @param int $userId
  * @param arr $postData
  * 
- * @returns array $errorMessage
+ * @returns int $postId
  */
+function addPost($conn, $userId, $postData){
 
-
-function addPost($conn, $userId, $postData, $errorMessage){
-    // title validation
-    if(empty($postData['title'])){
-        $errorMessage['post-title'] = "Name is required!"."</br>";
-    }
-    else{
-        if(strlen($postData['title']) > 255){
-            $errorMessage['post-title'] = "Please do not enter more than 255 characters"."</br>";
-        }
-    }
-    // email validation
-    if(empty($postData['body'])){
-        $errorMessage['post-body'] = "Name is required!"."</br>";
-    }
-    else{
-        if(strlen($postData['body']) > 255){
-            $errorMessage['post-body'] = "Please do not enter more than 255 characters"."</br>";
-        }
+    foreach($postData as &$pd){
+        $pd = trim(mysqli_real_escape_string($conn, $pd));
     }
 
-    if(!array_filter($errorMessage)){
+    // Insert
+    $sql = "INSERT INTO post(title, body, user_id) VALUES('{$postData['title']}', '{$postData['body']}', '$userId')";
 
-        foreach($postData as &$pd){
-            $pd = trim(mysqli_real_escape_string($conn, $cd));
-        }
+    $result = mysqli_query($conn, $sql);
 
-        // Insert SQL query
-        $sql = "INSERT INTO post(title, body, user_id) VALUES('{$postData['title']}', '{$postData['body']}', '$userId')";
-
-        if(mysqli_query($conn, $sql)){
-            // success
-            header("Location: index.php");
-        }
-        else{
-            echo 'query error: ' . mysqli_error($conn);
-        }
+    if(!$result){
+        echo 'query error: ' . mysqli_error($conn);
     }
-    return $errorMessage;
 
+    // Statement to get postId 
+    $sql = "SELECT id FROM post ORDER BY id DESC LIMIT 1";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) > 0) {
+        $post = mysqli_fetch_assoc($result);
+    } 
+    else {
+        echo 'query error: ' . mysqli_error($conn);
+    }
+
+    return (int)$post['id'];
 }
 
 /* *
@@ -60,45 +79,21 @@ function addPost($conn, $userId, $postData, $errorMessage){
  * 
  * @returns array $errorMessage
  */
+function editPost($conn, $userId, $postData){
+    foreach($postData as &$pd){
+        $pd = trim(mysqli_real_escape_string($conn, $pd));
+    }
 
+    // Update SQL query
+    $sql = "";
 
-function editPost($conn, $userId, $postData, $errorMessage){
-    // title validation
-    if(empty($postData['title'])){
-        $errorMessage['post-title'] = "Name is required!"."</br>";
+    if(mysqli_query($conn, $sql)){
+        // success
+        header("Location: index.php");
     }
     else{
-        if(strlen($postData['title']) > 255){
-            $errorMessage['post-title'] = "Please do not enter more than 255 characters"."</br>";
-        }
-    }
-    // email validation
-    if(empty($postData['body'])){
-        $errorMessage['post-body'] = "Name is required!"."</br>";
-    }
-    else{
-        if(strlen($postData['body']) > 255){
-            $errorMessage['post-body'] = "Please do not enter more than 255 characters"."</br>";
-        }
+        echo 'query error: ' . mysqli_error($conn);
     }
 
-    if(!array_filter($errorMessage)){
-
-        foreach($postData as &$pd){
-            $pd = trim(mysqli_real_escape_string($conn, $cd));
-        }
-
-        // Update SQL query
-        $sql = "";
-
-        if(mysqli_query($conn, $sql)){
-            // success
-            header("Location: index.php");
-        }
-        else{
-            echo 'query error: ' . mysqli_error($conn);
-        }
-    }
     return $errorMessage;
-
 }

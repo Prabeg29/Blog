@@ -33,8 +33,12 @@
                         <p>
                             <?php echo htmlspecialchars($post['body']);?>
                         </p>
-                        <div class="read-more">
+                        <div class="post-controls">
                             <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
+                            <?php if(isset($_SESSION["loggedin"])):?>
+                                |
+                                <a href="edit-post.php?postId=<?php echo $post['id'] ?>">Edit</a>
+                            <?php endif;?>
                         </div>
                         <div>
                             <?php echo commentCountForPost($conn, $post['id']);?> comments
