@@ -35,7 +35,7 @@ function validatePost($postData, &$errorMessage){
 /* *
  * Insert new post 
  * 
- * @param $conn
+ * @param my_sqli $conn
  * @param int $userId
  * @param arr $postData
  * 
@@ -71,29 +71,26 @@ function addPost($conn, $userId, $postData){
 }
 
 /* *
- * Insert new post 
+ * Edit existing post 
  * 
  * @param $conn
- * @param int $userId
  * @param arr $postData
  * 
- * @returns array $errorMessage
+ * @throws exception
  */
-function editPost($conn, $userId, $postData){
+function editPost($conn, $postData){
     foreach($postData as &$pd){
         $pd = trim(mysqli_real_escape_string($conn, $pd));
     }
 
-    // Update SQL query
-    $sql = "";
+    // Update
+    $sql = "UPDATE post SET title = '{$postData['title']}', body = '{$postData['body']}' WHERE id = '{$postData['id']}'";
 
-    if(mysqli_query($conn, $sql)){
-        // success
-        header("Location: index.php");
-    }
-    else{
+    $result = mysqli_query($conn, $sql);
+
+    if(!$result){
         echo 'query error: ' . mysqli_error($conn);
     }
 
-    return $errorMessage;
+    return true;
 }

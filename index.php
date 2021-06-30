@@ -37,7 +37,7 @@
                             <a href="view-post.php?id=<?php echo $post['id'];?>">Read more...</a>
                             <?php if(isset($_SESSION["loggedin"])):?>
                                 |
-                                <a href="edit-post.php?postId=<?php echo $post['id'] ?>">Edit</a>
+                                <a href="edit-post.php?id=<?php echo $post['id'] ?>">Edit</a>
                             <?php endif;?>
                         </div>
                         <div>

@@ -18,27 +18,29 @@
         'body'=>'',
     ];
 
-    if (isset($_GET['postId']))
+    if (isset($_GET['id']))
     {
-        $post = getPost($conn, $_GET['postId']);
-        if ($post)
+        $_SESSION['post'] = getPost($conn, $_GET['id']);
+        if ($_SESSION['post'])
         {
-            $postData['id'] = $post['id'];
-            $postData['title'] = $post['title'];
-            $postData['body'] = $post['body'];
+            $postData['id'] = $_SESSION['post']['id'];
+            $postData['title'] = $_SESSION['post']['title'];
+            $postData['body'] = $_SESSION['post']['title'];
         }
     }
 
     if(isset($_POST['submit'])){
 
         $postData = [
+            'id'=>(int)$_SESSION['post']['id'],
             'title'=>trim($_POST['post-title']),
             'body'=>trim($_POST['post-body'])
         ];
 
         if(validatePost($postData, $errorMessage)){
+
             if($postData['id']){
-                editPost($conn, $_SESSION['user_id'], $postData);
+                editPost($conn, $postData);
             }
             else{
                 $postId = addPost($conn, (int)$_SESSION['user_id'], $postData);
@@ -48,7 +50,7 @@
                 }
             }
 
-            header("Location: view-post.php?id=$postId");
+            header("Location: view-post.php?id={$postData['id']}");
         }
     }
 ?>
