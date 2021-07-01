@@ -12,7 +12,6 @@
  */
 function deletePost($conn, $postId)
 {
-    echo "Working";
     $sql = "DELETE FROM post WHERE id = $postId";
 
     if(!mysqli_query($conn, $sql)){

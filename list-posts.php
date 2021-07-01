@@ -40,15 +40,29 @@ if($_POST){
         <p>You have <?php echo count($posts) ?> posts.
         <form method="POST" action = "<?php echo $_SERVER['PHP_SELF']?>">
             <table id="post-list">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Creation date</th>
+                        <th>Comments</th>
+                        <th />
+                        <th />
+                    </tr>
+                </thead>
                 <tbody>
 
                     <?php foreach($posts as $post): ?>
                         <tr>
                             <td>
-                                <?php echo htmlspecialchars($post['title']); ?>
+                                <a href="view-post.php?id=<?php echo $post['id']?>">
+                                    <?php echo htmlspecialchars($post['title']); ?>
+                                </a>                                
                             </td>
                             <td>
                                 <?php echo date($post['created_at']); ?>
+                            </td>
+                            <td>
+                                <?php echo commentCountForPost($conn, $post['id']);?> comments
                             </td>
                             <td>
                                 <a href="edit-post.php?id=<?php echo $post['id'] ?>">Edit</a>

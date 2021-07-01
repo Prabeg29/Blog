@@ -18,16 +18,26 @@
         'email'=>'',
         'comment'=>''
     ];
-    if(isset($_POST['submit'])){
-        $commentData = [
-            'postId'=>$_POST['commentOnPostId'],
-            'name'=>$_POST['name'],
-            'email'=>$_POST['email'],
-            'comment'=>$_POST['comment']
-        ];
 
-        $errorMessage = addCommentToPost($conn, $commentData, $errorMessage);
+    if($_POST){
+        switch($_GET['action']){
+            case 'add-comment':
+                $commentData = [
+                    'postId'=>$_POST['commentOnPostId'],
+                    'name'=>$_POST['name'],
+                    'email'=>$_POST['email'],
+                    'comment'=>$_POST['comment']
+                ];
+                $errorMessage = handleAddComment($conn, $commentData, $errorMessage);
+                break;
+            case 'delete-comment':
+                $deleteResponse = $_POST['delete-comment'];
+                handleDeleteComment($conn, $_SESSION['post']['id'], $deleteResponse);
+                break;
+        }
     }
+
+    
 ?>
 
 <html>
@@ -51,25 +61,9 @@
                 </p>
             </div>
 
-            <div class="comment-list">
+            <?php include 'template/comment-list.php' ?>  
 
-                <?php foreach($_SESSION['comments'] as $comment):?>
-                    <div class="comment">
-                        <div class="comment-meta">
-                            Comment from
-                            <?php echo htmlspecialchars($comment['name']); ?>
-                            on
-                            <?php echo date($comment['created_at']); ?>
-                        </div>
-                        <div class="comment-body">
-                            <?php echo htmlspecialchars($comment['text']); ?>
-                        </div>
-                        <br>
-                    </div>
-                <?php endforeach;?>
-            </div>
-
-            <?php include('./template/comment-form.php');?>
+            <?php include('./template/comment-form.php');?>    
             
         <?php else:?>
             <h5>No Such Blog Exists!</h5>

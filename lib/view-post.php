@@ -1,5 +1,19 @@
 <?php
 
+/*
+ * Called to handle the comment form
+ *
+ * @param mysqli $conn
+ * @param int postId
+ * @param array $commentData
+*/
+function handleAddComment($conn, $commentData, $errorMessage){
+    $errorMessage = addCommentToPost($conn, $commentData, $errorMessage);
+
+    return $errorMessage;
+}
+
+
 /* *
  * Retreives a single post
  * 
@@ -38,7 +52,7 @@ function getCommentsForPost($conn, $postId){
     $postId = mysqli_real_escape_string($conn, $postId);
     
     // Statement to get comments for the post
-    $sql = "SELECT name, text, created_at, website FROM comments WHERE post_id = $postId";
+    $sql = "SELECT id, name, text, created_at, website FROM comments WHERE post_id = $postId ORDER BY created_at DESC";
 
     // Query the database to get the result
     $result = mysqli_query($conn, $sql);
@@ -106,3 +120,51 @@ function addCommentToPost($conn, $commentData, $errorMessage){
     }
     return $errorMessage;
 }
+
+/**
+ * Called to handle the delete comment form, redirects afterwards
+ *
+ * The $deleteResponse array is expected to be in the form:
+ *
+ *	Array ( [6] => Delete )
+ *
+ * which comes directly from input elements of this form:
+ *
+ *	name="delete-comment[6]"
+ *
+ * @param mysqli $conn
+ * @param integer $postId
+ * @param array $deleteResponse
+ */
+function handleDeleteComment($conn, $postId, $deleteResponse)
+{
+    if ($_SESSION["loggedin"]){
+        $keys = array_keys($deleteResponse);
+        $deleteCommentId = $keys[0];
+        if ($deleteCommentId){
+            deleteComment($conn, $postId, $deleteCommentId);
+        }
+        header("Location: view-post.php?id=$postId");
+    }
+}
+
+/**
+ * Delete the specified comment on the specified post
+ *
+ * @param mysqli $conn
+ * @param integer $postId
+ * @param integer $commentId
+ * 
+ * @throws Exception
+ */
+function deleteComment($conn, $postId, $commentId)
+{
+    echo "In";
+    // The comment id on its own would suffice, but post_id is a nice extra safety check
+    $sql = " DELETE FROM comments WHERE post_id = $postId AND id = $commentId";
+
+    if(!mysqli_query($conn, $sql)){
+        echo 'query error: ' . mysqli_error($conn);
+    }
+}
+
