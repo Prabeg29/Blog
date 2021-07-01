@@ -1,1 +1,1 @@
-# Blog
+# A Blog App to practice Procedural PHP with MySQL Database
