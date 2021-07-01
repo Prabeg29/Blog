@@ -49,21 +49,21 @@
     <body>
         <?php require 'template/title.php' ?>
         <p>Login here:</p>
-        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']?>">
-            <p>
+        <form method="POST" action="<?php echo $_SERVER['PHP_SELF']?>" class="user-form">
+            <div>
                 <label for="username">Username: </label> 
-                <input type="text" name="username" value="<?php echo htmlspecialchars($credential['username']);?>" />
+                <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($credential['username']);?>" />
                 <div>
                     <?php echo $errorMessage['username']; ?>
                 </div>
-            </p>
-            <p>
+            </div>
+            <div>
                 <label for="password">Password: </label>
-                <input type="password" name="password" value="<?php echo htmlspecialchars($credential['password']);?>"/>
+                <input type="password" id="password" name="password" value="<?php echo htmlspecialchars($credential['password']);?>"/>
                 <div>
                     <?php echo $errorMessage['username']; ?>
                 </div>
-            </p>
+            </div>
             <input type="submit" name="login" value="Login" />
         </form>
     </body>
